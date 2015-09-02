@@ -1,0 +1,11 @@
+Git Basics
+
+1. git clone <url> - for local copy. Creates a folder by the git project name.
+2. cd <folder name>
+3. git add <filename to be added to repo> OR git add -A  -for adding all files
+4. git commit -m "message/comment about the commit" 
+5. git push - push all local changes to hithub.com
+6. git pull - to pull files from hithub.com (Start the day witha git pull)
+
+git commit after resolving conflicts
+	Esc :wq to esc from the prompt
