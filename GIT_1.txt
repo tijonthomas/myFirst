@@ -1,0 +1,95 @@
+Subject: Git commands to push  
+1.       git pull 
+2.       Make your local changes
+3.       git pull (to ensure that your repo is up to date)
+4.       git gui (to check the changes you made in your local)
+5.       git status (will highlight the files you have changes. This is not mandatory)
+6.        To add your changes from unstaged to staged commits
+	###To add each file separately###
+	a.       Git add folder1/file1 
+	b.      Git add folder1/file2
+    Or
+	###To add all your local changes in one step###
+	c.       git add –a –m “Updated all the local changes”
+7.       git commit –m “Updated all the local changes” [Note: This command is only applicable if you perform “a”and “b” i.e. add each file individually. This is not required if you add all your local changes in one step i.e. if you perform “c”]
+8.       gitk [Note: This is to ensure that only your changes are committed. Please check this before you push your changes]
+9.       git push origin <branchname> [Note: This is to push your changes to same branch]
+or
+10.   git push origin <currentbranch>:<newbranch> [Note: This is to push your changes to a new branch]
+
+git clone http://wdsgerrit:8080/ServicesGateway
+
+git pull OR git stash
+git add --all
+git commit -am "Added Catalog-V4 Module"
+git push origin HEAD:refs/for/master
+
+mvn clean install -DwssgVersion=4.4.137
+
+
+http://11.16.155.33/wds/projects/WSSG-Tests/wssg-soapui/integration-tests/trunk/src/it/soapui/projects/
+http://11.16.155.33/wds/projects/WSSG-Tests/wssg-soapui/integration-tests/trunk/
+
+
+Force Git to overwrite local files on pull
+	git fetch --all
+	git reset --hard origin/master
+	git pull		
+	
+***********WB
+pritty print??
+tomcat
+catalina.sh - proxy mode or stub mode is set here
+inteligiidea
+
+soapuilog
+stublog
+tomcat/catalin.out
+console
+
+***********WB
+SETTING toDo 
+set tomcat/catalina.sh
+set MAVEN_OPTS=-Xmx1024m -Xms512m -XX:MaxPermSize=512m
+*****************************************************************************
+In GIT bash
+1. cd C:/Stage1/ServicesGateway
+	git stash
+	git pull
+	
+2. cd PSCore
+	mvn clean install -DskipTests -DskipCodeChecks -Dpmd.skip
+
+3. cd /WSSG
+	mvn clean install -DskipTests -DskipCodeChecks -Dpmd.skip
+
+Clear WebsiteServicesGateway folder and WebsiteServicesGateway.war from C:\TomCat7\apache-tomcat-7.0.57\webapps
+Copy 'WebsiteServicesGateway.war' from C:\Stage1\ServicesGateway\WSSG\WebsiteServicesGateway\target to C:\TomCat7\apache-tomcat-7.0.57\webapps
+
+cd /c/Stage1/ServicesGateway (master)
+C:\Stage1\ServicesGateway\SdpStub\SdpStubWeb (Create a folder for stub files(TjStub))
+	mvn jetty:run-war -Dsdp.stub.data.dir=C:/Stage1/ServicesGateway/SdpStub/TjStub
+		[INFO] Started Jetty Server
+	
+
+In cmd - 
+cd C:\TomCat7\apache-tomcat-7.0.57\bin
+	catalina.bat run
+	
+launch WSSG @ http://localhost:8088/WebsiteServicesGateway/
+Stub Configuration @ http://localhost:8010/
+
+Note - 
+1. Get the localhost details from C:\TomCat7\apache-tomcat-7.0.57\conf >> server.xml
+2. Clear logs in C:\TomCat7\apache-tomcat-7.0.57\logs
+
+Set property - 
+endPoint: http://localhost:8070/WebsiteServicesGateway
+testDataBasePath: C:\Stage1\ServicesGateway\SoapUI\src\test\resources\sdp-stub
+
+*****************************************************************************
+
+      mvn install:install-file -DgroupId=com.macys.mobile.gateway -DartifactId=sdp.stub.api -Dversion=4.12.0-SNAPSHOT -Dpackaging=jar -Dfile=/path/to/file
+
+
+*********************************

@@ -1,0 +1,44 @@
+Install SoapUI-Pro 5.0.0 and activate with a valid license.
+
+2. Go to <WSSG project home>/SdpStub/SoapUITestSystemHelper and build it.
+
+3. After build is complete, copy SoapUITestSystemHelper-4.11.0-SNAPSHOT.jar from target folder into directory 
+/SoapUI-Pro-5.0.0/bin/ext/
+
+4. Edit file /SoapUI-Pro-5.0.0/bin/soapui.properties (create this file if it is absent). Add two lines:
+
+testDataBasePath={ServicesGateway home dir}/SoapUI/src/test/resources/sdp-stub
+endPoint=http://localhost:8070/WebsiteServicesGateway
+
+5. Add strings to /SoapUI-Pro-5.0.0/bin/soapui-pro.sh:
+
+  JAVA_OPTS="$JAVA_OPTS -Dfixture.throw_exception_on_failure=true"
+
+6. Remove file /SoapUI-Pro-5.0.0/lib/xstream-1.3.1.jar    
+
+7. Run soapUI-Pro by execution of script /SoapUI-Pro-5.0.0/bin/soapui-pro.sh
+(You can use CygWin to run it in Windows OS).
+
+8. In SoapUi application, select menu File->Import project and select one of projects from project sources repository, for example: ~/ServicesGateway/SoapUI/src/test/resources/soap-wssg-v4
+
+9. Select “pretty print project files” checkbox in File-> Preferences-> WSDL Settings menu.
+
+
+Please add this step to your tests.
+[2/4/2015 9:41:13 AM] Denis Rosinskiy: Here is how to do it:
+[2/4/2015 9:41:41 AM] Denis Rosinskiy: 1. Close SoapUI.
+2. Go to <project home>/SdpStub/SoapUITestSystemHelper and build it (mvn clean install)
+
+3. Copy folders "actions" and "factories" from <project home>/SdpStub/SoapUITestSystemHelper/target/SoapUITestSystemHelper-4.11.0-SNAPSHOT.jar:/soapui into folder 
+/SoapUI-Pro-5.0.0/bin/
+
+4. Add verifyResponse test step to your tests: 
+
+- Mouse right click on test Name -> Add Step -> Custom Response Verifer (in the bottom of Context menu).
+
+
+
+*****************************************
+Git Bash
+	C:/Stage1/ServicesGateway
+	
