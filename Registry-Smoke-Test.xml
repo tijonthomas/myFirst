@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="Registry" resourceRoot="" soapui-version="5.0.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:testSuite name="Registry"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="true" maxResults="0" name="Registry Whole" searchProperties="true" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword="" id="50a7927d-1b08-451f-a5bb-6a7adf6e280c"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@max_rows">1000</con:setting><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@errors_only">false</con:setting><con:setting id="IncludeOverview">true</con:setting><con:setting id="IncludeResults">true</con:setting><con:setting id="FlowLayout">true</con:setting><con:setting id="ErrorDetails">true</con:setting><con:setting id="IncludeCoverage">true</con:setting><con:setting id="GeneratableJUnitReport@Style">Single Page (Print)</con:setting><con:setting id="GeneratableJUnitReport@Folder">C:\Users\tijo.thomas\Desktop</con:setting></con:settings><con:testStep type="groovy" name="email generator" id="81a5f61c-8207-4600-8bd1-c7f185ae02af"><con:settings/><con:config><script>testRunner.testCase.testSuite.setPropertyValue( "gvr", 'true' )
+testRunner.testCase.testSuite.setPropertyValue( "count", '0' )
+
+def sdf = new java.text.SimpleDateFormat("yyyyMMddhhmmss")
+					def useremail =  "user"+sdf.format( new Date())+"@user.com"
+					def regEmail =  "user"+sdf.format( new Date())+"@reg.com"
+					def coregEmail =  "user"+sdf.format( new Date())+"@coreg.com"					
+
+					def coregFirstname =  org.apache.commons.lang.RandomStringUtils.randomAlphabetic(5)
+					def coregLastname =  org.apache.commons.lang.RandomStringUtils.randomAlphabetic(6)
+					def regFirstname =  org.apache.commons.lang.RandomStringUtils.randomAlphabetic(7)
+					def regLastname =  org.apache.commons.lang.RandomStringUtils.randomAlphabetic(8)
+					
+					testRunner.testCase.testSuite.setPropertyValue( "emailId", useremail )
+					testRunner.testCase.testSuite.setPropertyValue( "emailId", regEmail )
+					testRunner.testCase.testSuite.setPropertyValue( "emailId", coregEmail )
+					testRunner.testCase.testSuite.setPropertyValue( "coregFirstname", coregFirstname )
+					testRunner.testCase.testSuite.setPropertyValue( "coregLastname", coregLastname )
+					testRunner.testCase.testSuite.setPropertyValue( "regFirstname", regFirstname )
+					testRunner.testCase.testSuite.setPropertyValue( "regLastname", regLastname )
+					return useremail
+								</script></con:config></con:testStep><con:testStep type="httprequest" name="Create user"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="Create user" postQueryString="false" mediaType="application/x-www-form-urlencoded" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/user</con:endpoint><con:request><![CDATA[firstname=WSSG&lastname=Testing&address1=685MarketSt&address2=Suite800&gender=M&city=San Francisco&state=CA&zipcode=94103&countrycode=USA&emailaddress=${#TestSuite#emailId}&verifyemailaddress=${#TestSuite#emailId}&password=Test@123&verifypassword=Test@123&birthdateday=14&birthdatemonth=05&birthdateyear=1976&subscription=N&textoption=N&bestphone=5105105100&mobilephone=4154154150&hintquestion=1&hintanswer=123
+]]></con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="SdpToken"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="SdpToken" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v1/user/sdptoken</con:endpoint><con:request><![CDATA[<request><email>${#TestSuite#emailId}</email><password>Test@123</password></request> ]]></con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [userId]"><con:configuration><path>exists( //sdpinfo/userId)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [token]"><con:configuration><path>exists( //sdpinfo/token)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Assert node [token]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def token = holder.getNodeValue( "//sdpinfo/token" )
+messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "genctxToken", token )
+
+
+assert token != null
+</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GET User"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET User" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="X-Mashery-Oauth-User-Context" value="${#TestSuite#genctxToken}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@strip-whitespaces">false</con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/user?show=summary,shipping,store</con:endpoint><con:request><![CDATA[<request>
+   <registry>
+      <shippingAddressSource>${#TestSuite#shippingSource}</shippingAddressSource>
+      <futureShippingAddressSource>${#TestSuite#futureShippingSource}</futureShippingAddressSource>
+      <coRegistrantContactInfo>
+         <middleName>${#TestSuite#coregMiddlename}</middleName>
+         <emailAddress>${#TestSuite#coregEmail}</emailAddress>
+         <bestPhone>${#TestSuite#coregPhone}</bestPhone>
+         <lastName>${#TestSuite#coregLastname}</lastName>
+         <firstName>${#TestSuite#coregFirstname}</firstName>
+         <currentAddress>
+            <addressLine1>${#TestSuite#Line1CoReg}</addressLine1>
+			<addressLine2>${#TestSuite#Line2CoReg}</addressLine2>
+			<addressLine3>${#TestSuite#Line3CoReg}</addressLine3>
+            <state>${#TestSuite#StateCoReg}</state>
+            <city>${#TestSuite#coregCity}</city>
+            <postalCode>${#TestSuite#ZipcodeCoReg}</postalCode>
+            <country>USA</country>
+         </currentAddress>
+      </coRegistrantContactInfo>
+      <registrantContactInfo>
+         <middleName>${#TestSuite#regMiddlename}</middleName>
+         <emailAddress>${#TestSuite#regEmail}</emailAddress>
+         <bestPhone>${#TestSuite#regPhone}</bestPhone>
+         <lastName>${#TestSuite#regLastname}</lastName>
+         <firstName>${#TestSuite#regFirstname}</firstName>
+         <currentAddress>
+            <addressLine1>${#TestSuite#Line1Reg}</addressLine1>
+			<addressLine2>${#TestSuite#Line2Reg}</addressLine2>
+			<addressLine3>${#TestSuite#Line3Reg}</addressLine3>
+            <state>${#TestSuite#regState}</state>
+            <city>${#TestSuite#regCity}</city>
+            <postalCode>${#TestSuite#ZipcodeReg}</postalCode>
+            <country>USA</country>
+         </currentAddress>
+      </registrantContactInfo>
+      <coRegistrantAddressFromRegistrant>${#TestSuite#CoRegAddfromReg}</coRegistrantAddressFromRegistrant>
+      <isFutureAddress>${#TestSuite#isFutureAdd}</isFutureAddress>
+      <futureShippingAttention>FutureShippingAttention</futureShippingAttention>
+      <futureShippingAddressEffectiveMonth>${#TestSuite#FutEffMonth}</futureShippingAddressEffectiveMonth>
+      <futureShippingAddressEffectiveDay>${#TestSuite#FutEffDay}</futureShippingAddressEffectiveDay>
+      <futureShippingAddressEffectiveYear>${#TestSuite#FutEffYear}</futureShippingAddressEffectiveYear>
+      <futureShippingAddress>
+        <addressLine1>${#TestSuite#Line1Future}</addressLine1>
+		<addressLine2>${#TestSuite#Line2Future}</addressLine2>
+		<addressLine3>${#TestSuite#Line3Future}</addressLine3>
+         <state>${#TestSuite#FShippingState}</state>
+         <city>${#TestSuite#FShippingCity}</city>
+         <postalCode>${#TestSuite#FShippingZip}</postalCode>
+         <country>USA</country>
+      </futureShippingAddress>
+      <shippingAddress>
+         <addressLine1>${#TestSuite#Line1Shipping}</addressLine1>
+		<addressLine2>${#TestSuite#Line2Shipping}</addressLine2>
+		<addressLine3>${#TestSuite#Line3Shipping}</addressLine3>
+         <state>${#TestSuite#ShippingState}</state>
+         <city>${#TestSuite#ShippingCity}</city>
+         <postalCode>${#TestSuite#ShippingZip}</postalCode>
+         <country>USA</country>
+      </shippingAddress>
+      <registryInfo>
+         <estimatedNoOfGuests>${#TestSuite#NoOfGuests}</estimatedNoOfGuests>
+         <eventDay>${#TestSuite#EventDay}</eventDay>
+         <eventMonth>${#TestSuite#EventMonth}</eventMonth>
+         <eventYear>${#TestSuite#EventYear}</eventYear>
+         <eventLocationStateCode>NY</eventLocationStateCode>
+         <eventLocationStateName>New york</eventLocationStateName>
+         <preferredStoreID>${#TestSuite#preferredStoreId}</preferredStoreID>
+         <availableOnTheInternet>${#TestSuite#OnTheInternet}</availableOnTheInternet>
+         <publicRegistry>${#TestSuite#publicRegistry}</publicRegistry>
+         <goGreen>${#TestSuite#goGreen}</goGreen>
+         <registryType>${#TestSuite#registryType}</registryType>
+         <subscribeWeddingEmailSalesEvents>${#TestSuite#subscribeWeddingEmail}</subscribeWeddingEmailSalesEvents>
+         <couplesMessage>${#TestSuite#couplesMessage}</couplesMessage>
+      </registryInfo>
+   </registry>
+</request>]]></con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="Create Registry.JSON"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="Create Registry.JSON" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="X-Mashery-Oauth-User-Context" value="${#TestSuite#genctxToken}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/registry</con:endpoint><con:request>{
+    "registry": {
+      "shippingAddressSource": "${#TestSuite#shippingSource}",
+      "futureShippingAddressSource": "${#TestSuite#futureShippingSource}",
+      "coRegistrantContactInfo": {
+        "middleName": "${#TestSuite#coregMiddlename}",
+        "emailAddress": "${#TestSuite#coregEmail}",
+        "bestPhone": "${#TestSuite#coregPhone}",
+        "lastName": "${#TestSuite#coregLastname}",
+        "firstName": "${#TestSuite#coregFirstname}",
+        "currentAddress": {
+          "addressLine1": "${#TestSuite#Line1CoReg}",
+          "addressLine2": "${#TestSuite#Line2CoReg}",
+          "addressLine3": "${#TestSuite#Line3CoReg}",
+          "state": "${#TestSuite#StateCoReg}",
+          "city": "${#TestSuite#coregCity}",
+          "postalCode": "${#TestSuite#ZipcodeCoReg}",
+          "country": "USA"
+        }
+      },
+      "registrantContactInfo": {
+        "middleName": "${#TestSuite#regMiddlename}",
+        "emailAddress": "${#TestSuite#regEmail}",
+        "bestPhone": "${#TestSuite#regPhone}",
+        "lastName": "${#TestSuite#regLastname}",
+        "firstName": "${#TestSuite#regFirstname}",
+        "currentAddress": {
+          "addressLine1": "${#TestSuite#Line1Reg}",
+          "addressLine2": "${#TestSuite#Line2Reg}",
+          "addressLine3": "${#TestSuite#Line3Reg}",
+          "state": "${#TestSuite#regState}",
+          "city": "${#TestSuite#regCity}",
+          "postalCode": "${#TestSuite#ZipcodeReg}",
+          "country": "USA"
+        }
+      },
+      "coRegistrantAddressFromRegistrant": "${#TestSuite#CoRegAddfromReg}",
+      "isFutureAddress": "${#TestSuite#isFutureAdd}",
+      "futureShippingAttention": "FutureShippingAttention",
+      "futureShippingAddressEffectiveMonth": "${#TestSuite#FutEffMonth}",
+      "futureShippingAddressEffectiveDay": "${#TestSuite#FutEffDay}",
+      "futureShippingAddressEffectiveYear": "${#TestSuite#FutEffYear}",
+      "futureShippingAddress": {
+        "addressLine1": "${#TestSuite#Line1Future}",
+        "addressLine2": "${#TestSuite#Line2Future}",
+        "addressLine3": "${#TestSuite#Line3Future}",
+        "state": "${#TestSuite#FShippingState}",
+        "city": "${#TestSuite#FShippingCity}",
+        "postalCode": "${#TestSuite#FShippingZip}",
+        "country": "USA"
+      },
+      "shippingAddress": {
+        "addressLine1": "${#TestSuite#Line1Shipping}",
+        "addressLine2": "${#TestSuite#Line2Shipping}",
+        "addressLine3": "${#TestSuite#Line3Shipping}",
+        "state": "${#TestSuite#ShippingState}",
+        "city": "${#TestSuite#ShippingCity}",
+        "postalCode": "${#TestSuite#ShippingZip}",
+        "country": "USA"
+      },
+      "registryInfo": {
+        "estimatedNoOfGuests": "${#TestSuite#NoOfGuests}",
+        "eventDay": "${#TestSuite#EventDay}",
+        "eventMonth": "${#TestSuite#EventMonth}",
+        "eventYear": "${#TestSuite#EventYear}",
+        "eventLocationStateCode": "NY",
+        "eventLocationStateName": "New york",
+        "preferredStoreID": "${#TestSuite#preferredStoreId}",
+        "availableOnTheInternet": "${#TestSuite#OnTheInternet}",
+        "publicRegistry": "${#TestSuite#publicRegistry}",
+        "goGreen": "${#TestSuite#goGreen}",
+        "registryType": "${#TestSuite#registryType}",
+        "subscribeWeddingEmailSalesEvents": "${#TestSuite#subscribeWeddingEmail}",
+        "couplesMessage": "${#TestSuite#couplesMessage}"
+      }
+    }
+  }</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [success]"><con:configuration><path>//response[1]/success[1]/text()</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryId]"><con:configuration><path>exists( //response/registryId)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [isUserAuthenticated]"><con:configuration><path>//response[1]/isUserAuthenticated[1]/text()</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [batchFlagText]"><con:configuration><path>exists( //response/batchFlagText)</path><content>false</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Set [registryId]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def node = holder.getNodeValue( "//response/registryId" )
+messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "registryId", node )
+
+
+assert node != null
+</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="BVR"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="BVR" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="X-Mashery-Oauth-User-Context" value="${#TestSuite#genctxToken}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/registry?show=basic,bride,groom,Shipping,items,totals&amp;type=BVR</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantContactInfo]"><con:configuration><path>exists( //response/coRegistrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [currentAddress]"><con:configuration><path>exists( //response/coRegistrantContactInfo/currentAddress)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantAddressFromRegistrant]"><con:configuration><path>exists( //response/coRegistrantAddressFromRegistrant)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryInfo]"><con:configuration><path>exists( //response/registryInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registrantContactInfo]"><con:configuration><path>exists( //response/registrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [contactAddress]"><con:configuration><path>exists( //response/registrantContactInfo/contactAddress)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [totalQty]"><con:configuration><path>exists( //response/totalQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [emailAddress]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/emailAddress[1]/text()</path><content>${#TestSuite#coregEmail}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [bestPhone]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/bestPhone[1]/text()</path><content>${#TestSuite#coregPhone}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [addressLine1]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/addressLine1[1]/text()</path><content>${#TestSuite#Line1CoReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [addressLine2]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/addressLine2[1]/text()</path><content>${#TestSuite#Line2CoReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [addressLine3]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/addressLine3[1]/text()</path><content>${#TestSuite#Line3CoReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [state]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/state[1]/text()</path><content>${#TestSuite#StateCoReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [city]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/city[1]/text()</path><content>${#TestSuite#coregCity}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [postalCode]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/postalCode[1]/text()</path><content>${#TestSuite#ZipcodeCoReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [country]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/currentAddress[1]/country[1]/text()</path><content>USA</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="CoReg's [middleName]"><con:configuration><path>//response[1]/coRegistrantContactInfo[1]/middleName[1]/text()</path><content>${#TestSuite#coregMiddlename}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [emailAddress]"><con:configuration><path>//response[1]/registrantContactInfo[1]/emailAddress[1]/text()</path><content>${#TestSuite#regEmail}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [bestPhone]"><con:configuration><path>//response[1]/registrantContactInfo[1]/bestPhone[1]/text()</path><content>${#TestSuite#regPhone}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [addressLine1]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/addressLine1[1]/text()</path><content>${#TestSuite#Line1Reg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [addressLine2]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/addressLine2[1]/text()</path><content>${#TestSuite#Line2Reg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [addressLine3]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/addressLine3[1]/text()</path><content>${#TestSuite#Line3Reg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [state]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/state[1]/text()</path><content>${#TestSuite#regState}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [city]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/city[1]/text()</path><content>${#TestSuite#regCity}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [postalCode]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/postalCode[1]/text()</path><content>${#TestSuite#ZipcodeReg}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [country]"><con:configuration><path>//response[1]/registrantContactInfo[1]/contactAddress[1]/country[1]/text()</path><content>USA</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Reg's [middleName]"><con:configuration><path>//response[1]/registrantContactInfo[1]/middleName[1]/text()</path><content>${#TestSuite#regMiddlename}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Existance of totals [totalQty]"><con:configuration><path>exists( //response/totalQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Existance of totals [purchasedQty]"><con:configuration><path>exists( //response/purchasedQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Existance of totals [stillOpenTotal]"><con:configuration><path>exists( //response/stillOpenTotal)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [registryType]"><con:configuration><path>//response[1]/registryInfo[1]/registryType[1]/text()</path><content>${#TestSuite#registryType}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [eventDay]" disabled="true"><con:configuration><path>//response[1]/registryInfo[1]/eventDay[1]/text()</path><content>${#TestSuite#EventDay}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [eventMonth]"><con:configuration><path>//response[1]/registryInfo[1]/eventMonth[1]/text()</path><content>${#TestSuite#EventMonth}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [eventYear]"><con:configuration><path>//response[1]/registryInfo[1]/eventYear[1]/text()</path><content>${#TestSuite#EventYear}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [estimatedNoOfGuests]"><con:configuration><path>//response[1]/registryInfo[1]/estimatedNoOfGuests[1]/text()</path><content>${#TestSuite#NoOfGuests}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [preferredStoreID]"><con:configuration><path>//response[1]/registryInfo[1]/preferredStoreID[1]/text()</path><content>${#TestSuite#preferredStoreId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [registryId]"><con:configuration><path>//response[1]/registryInfo[1]/registryId[1]/text()</path><content>${#TestSuite#registryId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [publicRegistry]"><con:configuration><path>//response[1]/registryInfo[1]/publicRegistry[1]/text()</path><content>${#TestSuite#publicRegistry}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [eventLocationStateName]" disabled="true"><con:configuration><path>//response[1]/registryInfo[1]/eventLocationStateName[1]/text()</path><content>New York</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [availableOnTheInternet]"><con:configuration><path>//response[1]/registryInfo[1]/availableOnTheInternet[1]/text()</path><content>${#TestSuite#OnTheInternet}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [subscribeWeddingEmailSalesEvents]"><con:configuration><path>//response[1]/registryInfo[1]/subscribeWeddingEmailSalesEvents[1]/text()</path><content>${#TestSuite#subscribeWeddingEmail}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [couplesMessage]"><con:configuration><path>//response[1]/registryInfo[1]/couplesMessage[1]/text()</path><content>${#TestSuite#couplesMessage}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Registry's [goGreen]"><con:configuration><path>//response[1]/registryInfo[1]/goGreen[1]/text()</path><content>${#TestSuite#goGreen}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Set [registryBarcode]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def registryBarcode = holder.getNodeValue( "//response/registryInfo/registryBarcode" )
+messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "registryBarcode", registryBarcode )
+
+assert registryBarcode != null
+</scriptText></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [shippingAddressSource]"><con:configuration><path>//response[1]/shippingAddressSource[1]/text()</path><content>${#TestSuite#shippingSource}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [futureShippingAddressSource]" disabled="true"><con:configuration><path>//response[1]/futureShippingAddressSource[1]/text()</path><content>${#TestSuite#futureShippingSource}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Assert [shipping &amp; Future Shipping Address]" disabled="true"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def shippingSource = context.expand('${#TestSuite#shippingSource}');
+def futureShippingSource = context.expand('${#TestSuite#futureShippingSource}');
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+
+def shippingaddressLine1 = holder.getNodeValue( "//response/shippingAddress/addressLine1" )
+def shippingaddressLine2 = holder.getNodeValue( "//response/shippingAddress/addressLine2" )
+def shippingaddressLine3 = holder.getNodeValue( "//response/shippingAddress/addressLine3" )
+def shippingState = holder.getNodeValue( "//response/shippingAddress/state" )
+def shippingCity = holder.getNodeValue( "//response/shippingAddress/city" )
+def shippingPin = holder.getNodeValue( "//response/shippingAddress/postalCode" )
+def shippingCountry = holder.getNodeValue( "//response/shippingAddress/country" )
+
+def fshippingaddressLine1 = holder.getNodeValue( "//response/futureShippingAddress/addressLine1" )
+def fshippingaddressLine2 = holder.getNodeValue( "//response/futureShippingAddress/addressLine2" )
+def fshippingaddressLine3 = holder.getNodeValue( "//response/futureShippingAddress/addressLine3" )
+def fshippingState = holder.getNodeValue( "//response/futureShippingAddress/state" )
+def fshippingCity = holder.getNodeValue( "//response/futureShippingAddress/city" )
+def fshippingPin = holder.getNodeValue( "//response/futureShippingAddress/postalCode" )
+def fshippingCountry = holder.getNodeValue( "//response/futureShippingAddress/country" )
+
+def regaddressLine1 = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/addressLine1" )
+def regaddressLine2 = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/addressLine2" )
+def regaddressLine3 = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/addressLine3" )
+def regstate = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/state" )
+def regcity = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/city" )
+def regpin = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/postalCode" )
+def regcountry = holder.getNodeValue( "//response/registrantContactInfo/contactAddress/country" )
+
+//def coregaddressLine1 = holder.getNodeValue( "//response/coRegistrantContactInfo/contactAddress/addressLine1" )
+def coregaddressLine1 = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/addressLine1" )
+def coregaddressLine2 = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/addressLine2" )
+def coregaddressLine3 = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/addressLine3" )
+def coregstate = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/state" )
+def coregcity = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/city" )
+def coregpin = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/postalCode" )
+def coregcountry = holder.getNodeValue( "//response/coRegistrantContactInfo/currentAddress/country" )
+
+//Shipping Address
+if(shippingSource=='REGISTRANT'){
+	assert shippingaddressLine1.equals(regaddressLine1)
+	assert shippingaddressLine2.equals(regaddressLine2)
+	assert shippingaddressLine3.equals(regaddressLine3)
+	assert shippingState.equals(regstate)
+	assert shippingCity.equals(regcity)
+	assert shippingPin.equals(regpin)
+	assert shippingCountry.equals(regcountry)
+}
+else if(shippingSource=='COREGISTRANT'){
+	assert shippingaddressLine1.equals(coregaddressLine1)
+	assert shippingaddressLine2.equals(coregaddressLine2)
+	assert shippingaddressLine3.equals(coregaddressLine3)
+	assert shippingState.equals(coregstate)
+	assert shippingCity.equals(coregcity)
+	assert shippingPin.equals(coregpin)
+	assert shippingCountry.equals(coregcountry)
+}
+
+// Future Shipping Address
+if(futureShippingSource=='REGISTRANT'){
+	assert fshippingaddressLine1.equals(regaddressLine1)
+	assert fshippingaddressLine2.equals(regaddressLine2)
+	assert fshippingaddressLine3.equals(regaddressLine3)
+	assert fshippingState.equals(regstate)
+	assert fshippingCity.equals(regcity)
+	assert fshippingPin.equals(regpin)
+	assert fshippingCountry.equals(regcountry)
+}
+else if(futureShippingSource=='COREGISTRANT'){	
+	assert fshippingaddressLine1.equals(coregaddressLine1)
+	assert fshippingaddressLine2.equals(coregaddressLine2)
+	assert fshippingaddressLine3.equals(coregaddressLine3)
+	assert fshippingState.equals(coregstate)
+	assert fshippingCity.equals(coregcity)
+	assert fshippingPin.equals(coregpin)
+	assert fshippingCountry.equals(coregcountry)
+}
+//else if(shippingSource=='OTHER'){
+//	
+//}
+
+//assert shippingAddress != null
+</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Assert-names"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def colastName = holder.getNodeValue( "//response/coRegistrantContactInfo/lastName" )
+def cofirstName = holder.getNodeValue( "//response/coRegistrantContactInfo/firstName")
+def reglastName = holder.getNodeValue( "//response/registrantContactInfo/lastName")
+def regfirstName = holder.getNodeValue( "//response/registrantContactInfo/firstName")
+
+assert colastName.equalsIgnoreCase(context.expand('${#TestSuite#coreglastname}'))
+assert cofirstName.equalsIgnoreCase(context.expand('${#TestSuite#coregFirstname}'))
+assert reglastName.equalsIgnoreCase(context.expand('${#TestSuite#regLastname}'))
+assert regfirstName.equalsIgnoreCase(context.expand('${#TestSuite#regFirstname}'))</scriptText></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [isFutureAddress]" disabled="true"><con:configuration><path>//response[1]/isFutureAddress[1]/text()</path><content>${#TestSuite#isFutureAdd}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GVR by-id-1"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GVR by-id-1" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/registry/by-id/${#TestSuite#registryId}?type=GVR</con:endpoint><con:request/><con:assertion type="GroovyScriptAssertion" name="Script Assertion"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def header = messageExchange.responseHeaders.toString()
+int count = Integer.parseInt(context.expand('${#TestSuite#count}'))
+def today = new Date()
+
+if (header.contains("200 OK")){	
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'true' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '0' )
+	log.info "***************GVR - Passed at "+ today.toString()+ " ***************"
+}
+else if (count == 0){
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'false' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '1' )
+	log.info "GVR Failed at "+ today.toString()
+}</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Loop until GVR Pass" id="009edbaa-96d2-42f6-adf8-cb867ff8e858"><con:settings/><con:config><script>def gvr=context.expand('${#TestSuite#gvr}')
+
+if (gvr.equals('false')){
+	sleep(1000)	
+	testRunner.gotoStepByName( "GVR by-id-1")	
+}
+else{	
+	testRunner.gotoStepByName( "GVR by-id-2")	
+}</script></con:config></con:testStep><con:testStep type="httprequest" name="GVR by-id-2" id="ea715672-e562-4599-bb09-b4cac9327d22"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GVR by-id-2" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/registry/by-id/${#TestSuite#registryId}?type=GVR</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantContactInfo]"><con:configuration><path>exists( //response/coRegistrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registrantContactInfo]"><con:configuration><path>exists( //response/registrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryInfo]"><con:configuration><path>exists( //response/registryInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GVR by-name"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GVR by-name" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v2/registry/by-name?firstName=${#TestSuite#coregFirstname}&amp;lastName=${#TestSuite#coregLastname}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantContactInfo]"><con:configuration><path>exists( //response/coRegistrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registrantContactInfo]"><con:configuration><path>exists( //response/registrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryInfo]"><con:configuration><path>exists( //response/registryInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [registryId]"><con:configuration><path>//searchRegistryResponses/response/registryInfo/registryId/text()</path><content>${#TestSuite#registryId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantContactInfo]"><con:configuration><path>exists( //response/coRegistrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registrantContactInfo]"><con:configuration><path>exists( //response/registrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryInfo]"><con:configuration><path>exists( //response/registryInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties><con:property><con:name>itemFound_flag</con:name><con:value>true</con:value></con:property><con:property><con:name>productId</con:name><con:value>23139</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>0592ea83-f3a6-4715-a90d-61a7d166ee99</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>9ffeff1c-93b3-4911-802f-7b3249befd99</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>0b3fa046-21fa-4659-88e8-b6c33f1cf804</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4f5c7e3c-135f-4654-93c5-d190df1852a8</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>f8c76a06-37f8-4430-aeb2-95dae3164a6f</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>6872eaa4-73e8-4f42-b546-bc576a1e8b72</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c136b370-6432-414a-8fa5-58bd2e0bbe82</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>92ec6ffc-03d0-480a-b2ca-46d275a19e41</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>f0059ac9-6192-4a1e-b7fc-a1e05a6f09b5</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>bbc35938-5b71-4610-ba04-3544735df16b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>93bd8caa-2b6a-45c1-a4da-99dd6ec3d88e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>e04cf0d4-2f9f-40eb-b6a6-92f97540b861</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>da4ec907-3bbe-43da-a488-fa36cab4313b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b9cfe94f-350f-4aec-a0d4-c1ef63289c4b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3ac7cb55-c0a9-4fb5-a7ad-c7aeb199a019</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>03474a32-c822-4545-b562-2b96e0134fea</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>505ee185-4d82-4c4a-a7d6-a41dd9c1d6f0</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>909feb60-d9f4-48c2-b9b4-539eb072ad17</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a7d3655f-5895-4bdd-9509-ae876f731273</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>88c4bfb7-99b8-4b0a-9f17-0b98a961a714</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a9b09540-cda6-4a4b-b13e-c7f52370eda2</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>42f5b219-5485-468c-8e76-2a419789cd8a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3245cf88-02bc-420d-8cda-9842d008c2cc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3a329d8f-0c5b-4a5d-b19d-19cfb4ab41bf</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8f648578-cbf5-49c9-9f30-1c26faabb4af</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>00716173-f33f-4414-badf-682d962d8850</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>0141cb0c-98f6-4d7e-822a-6864e5e6c251</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>963184d7-ff9e-4db6-b4b8-6dcc09a27b5d</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>276d686a-98f8-497d-a7b0-4a0eaf4029c9</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b01c8947-86f0-4e9a-85e6-f6e82be11ff1</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>987b86e6-69f4-48e3-964f-2cdf26df18b6</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>24223bac-0e79-4e49-a8d8-220f2b6ffc8d</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4b170b31-87bc-452d-96e2-13cc889093cc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>81a5f61c-8207-4600-8bd1-c7f185ae02af</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>009edbaa-96d2-42f6-adf8-cb867ff8e858</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>ea715672-e562-4599-bb09-b4cac9327d22</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="DIS - Item" searchProperties="true" id="6ab3fb29-a686-4f01-9b5d-615427f213a8"><con:settings/><con:testStep type="httprequest" name="v4//category-Get Category" id="94b7eb9b-ba4f-420a-b38e-2f64f24d772b"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="v4//category-Get Category" postQueryString="false" mediaType="application/json" id="9bb15ad0-2a44-490e-ae0b-4125bc031f66" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-customer-id" value="${#Project#customerid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endpoint}/v4/catalog/category?application=MOBILE&amp;assortment=WEDDING_REGISTRY</con:endpoint><con:request>{}</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes" id="f706ddcc-5128-49c6-bdbd-91d3b417d653"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Set TestSuite [Category]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def Category = holder.getNodeValue( "//categoryresponse/categoryDetails[attributes/bT != 'GoTo' and attributes/bT != 'Brand Index']/id" )
+//log.info Category.toString()
+messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "categoryid", Category )
+
+assert Category != null
+</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Set [Registrable CatId]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def header = context.currentStep.getHttpRequest().getResponse().properties["responseHeaders"]
+
+def Category = holder.getNodeValue( "//categoryresponse/categoryDetails[attributes/bT != 'GoTo' and attributes/bT != 'Brand Index']/id" )
+def catId_Reg = holder.getNodeValue( "//categoryresponse[1]/categoryDetails[2]/id[1]" )
+if (header["#status#"].toString().contains("200 OK") &amp;&amp; catId_Reg.toString() != 'null'){
+	messageExchange.modelItem.testStep.testCase.setPropertyValue( "catId_Reg", catId_Reg )
+}
+
+assert catId_Reg != null
+</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><con:parameter><con:name>x-macys-webservice-client-id</con:name><con:value>${#Project#clientid}</con:value><con:style>HEADER</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters></con:config></con:testStep><con:testStep type="httprequest" name="v3//browseproducts-Get Products" id="737d56ea-68a6-4c2e-a668-31a5ab35b9f4">
+    <con:settings/>
+    <con:config method="GET" xsi:type="con:HttpRequest" name="v3//browseproducts-Get Products" id="ea96604a-a6c7-45b6-a5ca-1df5a7a70911" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <con:settings>
+        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept" value="${#Project#Accept}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+    </con:settings>
+    <con:endpoint>${#Project#endpoint}/v3/catalog/category/${#TestSuite#categoryid}/browseproducts?currentpage=1&amp;resultsperpage=50&amp;show=product&amp;application=MOBILE&amp;assortment=WEDDING_REGISTRY</con:endpoint>
+    <con:request/>
+    
+    
+    
+    
+    
+    
+    
+    <con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes">
+      <con:configuration>
+        <codes>200</codes>
+      </con:configuration>
+    </con:assertion><con:assertion type="GroovyScriptAssertion" name="Script-Get&amp;Set TC[Master.Member.Review.Size Products]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def prodid_member = holder.getNodeValue( "//*:CategoryResponse/category/product/product[summary/iscollection='false']/@id" )
+
+if (prodid_member != null){
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "prodid_member", prodid_member )
+}
+</scriptText></con:configuration></con:assertion><con:credentials>
+      <con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType>
+    </con:credentials>
+    <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+    <con:jmsPropertyConfig/>
+    <con:parameters>
+      <con:parameter>
+        <con:name>x-macys-webservice-client-id</con:name>
+        <con:value>${#Project#clientid}</con:value>
+        <con:style>HEADER</con:style>
+        <con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type>
+        <con:default>${#Project#clientid}</con:default>
+        <con:path xsi:nil="true"/>
+        <con:description xsi:nil="true"/>
+      </con:parameter>
+      <con:parameter>
+        <con:name>x-macys-customer-id</con:name>
+        <con:value>${#Project#customerid}</con:value>
+        <con:style>HEADER</con:style>
+        <con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type>
+        <con:default>${#Project#customerid}</con:default>
+        <con:path xsi:nil="true"/>
+        <con:description xsi:nil="true"/>
+      </con:parameter>
+    </con:parameters>
+  </con:config>
+</con:testStep><con:testStep type="httprequest" name="v3/catalog/product/-Get UPC" id="a1b8813b-8f29-44a2-8491-1842d222a788">
+    <con:settings/>
+    <con:config method="GET" xsi:type="con:HttpRequest" name="v3/catalog/product/-Get UPC" id="101df911-9c4c-462e-b037-00ecd8bc95b7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <con:settings>
+        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept" value="${#Project#accept}" xmlns="http://eviware.com/soapui/config"/></con:setting>
+    </con:settings>
+    <con:endpoint>${#Project#endpoint}/v3/catalog/product/${#TestSuite#prodid_member}?show=upc</con:endpoint>
+    <con:request/>
+    <con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes" id="b0817b96-4ff0-4164-86a0-8b0fe91b93f3">
+      <con:configuration>
+        <codes>200</codes>
+      </con:configuration>
+    </con:assertion>
+    
+    
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      
+      
+      <con:assertion type="GroovyScriptAssertion" name="Assert node [@upcnumber]"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def upcnumber = holder.getNodeValue( "//productresponse/product/upc/@upcnumber" )
+messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "UPC", upcnumber )
+
+</scriptText></con:configuration></con:assertion><con:credentials>
+        <con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType>
+      </con:credentials>
+      <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+      <con:jmsPropertyConfig/>
+      <con:parameters>
+        <con:parameter>
+          <con:name>x-macys-webservice-client-id</con:name>
+          <con:value>${#Project#clientid}</con:value>
+          <con:style>HEADER</con:style>
+          <con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type>
+          <con:default>${#Project#clientid}</con:default>
+          <con:path xsi:nil="true"/>
+          <con:description xsi:nil="true"/>
+        </con:parameter>
+        <con:parameter>
+          <con:name>x-macys-customer-id</con:name>
+          <con:value>${#Project#customerid}</con:value>
+          <con:style>HEADER</con:style>
+          <con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type>
+          <con:default>${#Project#customerid}</con:default>
+          <con:path xsi:nil="true"/>
+          <con:description xsi:nil="true"/>
+        </con:parameter>
+      </con:parameters>
+    </con:config>
+  </con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [lineItems]"><con:configuration><path>exists( //response/itemsMapper/lineItems)</path><content>false</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="POST v3/dis/registry"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="POST v3/dis/registry" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request>{ 
+  "items": [ 
+    {      
+      "upcNumber": "${#TestSuite#UPC}", 
+      "qtyRequested": "${#TestSuite#qty}"      
+    } 
+  ] 
+} </con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [success=true]"><con:configuration><path>//registry[1]/items[1]/success[1]/text()</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [upcNumber]"><con:configuration><path>//registry[1]/items[1]/upcNumber[1]/text()</path><content>${#TestSuite#UPC}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [registryId]"><con:configuration><path>//registry[1]/registryId[1]/text()</path><content>${#TestSuite#registryId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm ADD-1" id="efe540b8-74ce-49c0-bb64-b56561ea7d0a"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm ADD-1" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script Assertion"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+def upc_exp = context.expand('${#TestSuite#UPC}');
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def header = messageExchange.responseHeaders.toString()
+def upc_act = holder.getNodeValue( "//response/itemsMapper/lineItems/upcNumber" )
+int count = Integer.parseInt(context.expand('${#TestSuite#count}'))
+
+def today = new Date()
+
+if (header.contains("200 OK") &amp;&amp; upc_exp==upc_act){	
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'true' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '0' )
+	log.info "*************** Item Add - Confirmed at "+ today.toString()+ " ***************" 
+}
+else if (count == 0){
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'false' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '1' )
+	log.info "Item Add Confirmation Failed at "+ today.toString()
+}</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Loop until Item Add Confirmed" id="fade6788-466c-4a1e-9a12-f6b99a332baa"><con:settings/><con:config><script>def gvr=context.expand('${#TestSuite#gvr}')
+
+if (gvr.equals('false')){
+	sleep(1000)	
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm ADD-1")	
+}
+else{
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm ADD-2")	
+}</script></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm ADD-2"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm ADD-2" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [upcNumber]"><con:configuration><path>//response[1]/itemsMapper[1]/lineItems[1]/upcNumber[1]/text()</path><content>${#TestSuite#UPC}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [qtyRequested]"><con:configuration><path>//response[1]/itemsMapper[1]/lineItems[1]/qtyRequested[1]/text()</path><content>${#TestSuite#qty}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [lineItems]"><con:configuration><path>exists( //response/itemsMapper/lineItems)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [totalQty]"><con:configuration><path>exists( //response/totalQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [purchasedQty]"><con:configuration><path>exists( //response/purchasedQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [stillOpenTotal]"><con:configuration><path>exists( //response/stillOpenTotal)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="PUT v3/dis/registry"><con:settings/><con:config method="PUT" xsi:type="con:HttpRequest" name="PUT v3/dis/registry" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request>{ 
+  "items": [ 
+    { 
+      "itmSeqNbr": 1, 
+      "upcNumber": "${#TestSuite#UPC}", 
+      "qtyRequested": "${#TestSuite#qtyUpdate}"
+    } 
+  ] 
+} </con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [success=true]"><con:configuration><path>//registry[1]/items[1]/success[1]/text()</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [upcNumber]"><con:configuration><path>//registry[1]/items[1]/upcNumber[1]/text()</path><content>${#TestSuite#UPC}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [registryId]"><con:configuration><path>//registry[1]/registryId[1]/text()</path><content>${#TestSuite#registryId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm UPDATE-1" id="235cbd10-75bc-4db8-9123-c4c8097d1c7a"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm UPDATE-1" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script Assertion"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+def qty_exp = context.expand('${#TestSuite#qtyUpdate}')
+
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def header = messageExchange.responseHeaders.toString()
+def qty_act = holder.getNodeValue( "//response/itemsMapper/lineItems/qtyRequested" )
+int count = Integer.parseInt(context.expand('${#TestSuite#count}'))
+
+def today = new Date()
+
+if (header.contains("200 OK") &amp;&amp; qty_exp==qty_act){	
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'true' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '0' )
+	log.info "*************** Item Update - Confirmation Passed at "+ today.toString()+ " ***************"
+}
+else if (count == 0){
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'false' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '1' )
+	log.info "Item Update Confirmation Failed at "+ today.toString()
+}
+</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Loop until Item Update Confirmed" id="b060b06c-1c97-433b-adb1-5862ac5ae4d2"><con:settings/><con:config><script>def gvr=context.expand('${#TestSuite#gvr}')
+
+if (gvr.equals('false')){
+	sleep(1000)	
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm UPDATE-1")
+}
+else{
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm UPDATE-2")
+}</script></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm UPDATE-2"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm UPDATE-2" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [qtyRequested]"><con:configuration><path>//response[1]/itemsMapper[1]/lineItems[1]/qtyRequested[1]/text()</path><content>${#TestSuite#qtyUpdate}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [lineItems]"><con:configuration><path>exists( //response/itemsMapper/lineItems)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="POST v3/dis/registry/delete"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" name="POST v3/dis/registry/delete" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}/delete</con:endpoint><con:request>{ 
+  "items": [ 
+    { 
+      "itmSeqNbr": 1, 
+      "upcNumber": "${#TestSuite#UPC}"
+    } 
+  ] 
+} </con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [success=true]"><con:configuration><path>//registry[1]/items[1]/success[1]/text()</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [upcNumber]"><con:configuration><path>//registry[1]/items[1]/upcNumber[1]/text()</path><content>${#TestSuite#UPC}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Match content of [registryId]"><con:configuration><path>//registry[1]/registryId[1]/text()</path><content>${#TestSuite#registryId}</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm DELETE-1" id="b5ca1d8b-4740-44eb-a6dd-3609975ead78"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm DELETE-1" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" name="Script Assertion"><con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def header = messageExchange.responseHeaders.toString()
+def lineItems = holder.getDomNode( "//response/itemsMapper/lineItems" )
+int count = Integer.parseInt(context.expand('${#TestSuite#count}'))
+
+def today = new Date()
+
+if (header.contains("200 OK") &amp;&amp; lineItems==null){	
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'true' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '0' )
+	log.info "*************** Item Deletion - Confirmation Passed at "+ today.toString()+ " ***************"
+}
+else if (count == 0){
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "gvr", 'false' )
+	messageExchange.modelItem.testStep.testCase.testSuite.setPropertyValue( "count", '1' )
+	log.info "Item Deletion Confirmation Failed at "+ today.toString()
+}
+
+</scriptText></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Loop until Item Delete Confirmed" id="d8dfe916-148c-45ce-b6e3-0aa64037f88c"><con:settings/><con:config><script>def gvr=context.expand('${#TestSuite#gvr}')
+
+if (gvr.equals('false')){
+	sleep(1000)	
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm DELETE-1")	
+}
+else{
+	testRunner.gotoStepByName( "GET v3/dis/registry Confirm DELETE-2")	
+}</script></con:config></con:testStep><con:testStep type="httprequest" name="GET v3/dis/registry Confirm DELETE-2"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="GET v3/dis/registry Confirm DELETE-2" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-macys-webservice-client-id" value="${#Project#clientid}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#endPoint}/v3/dis/registry/${#TestSuite#registryId}</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [lineItems]"><con:configuration><path>exists( //response/itemsMapper/lineItems)</path><content>false</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties><con:property><con:name>catId_Reg</con:name><con:value>7498</con:value></con:property><con:property><con:name>prodid_member</con:name><con:value>1539213</con:value></con:property><con:property><con:name>upcnumber</con:name><con:value>85081125859</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>cd9edaf7-8592-41b7-acad-7bd33de48dbd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>afea4914-b1b3-49de-9753-7926e7046f90</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>e3193661-4570-441a-b606-c3a7aa579613</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3f0585bf-62f5-4ca8-a216-ffdb527afaa5</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a04d4e63-f24d-41b4-83b0-2f1a6d3105bd</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>94b7eb9b-ba4f-420a-b38e-2f64f24d772b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>737d56ea-68a6-4c2e-a668-31a5ab35b9f4</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a1b8813b-8f29-44a2-8491-1842d222a788</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>efe540b8-74ce-49c0-bb64-b56561ea7d0a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>235cbd10-75bc-4db8-9123-c4c8097d1c7a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b5ca1d8b-4740-44eb-a6dd-3609975ead78</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>fade6788-466c-4a1e-9a12-f6b99a332baa</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b060b06c-1c97-433b-adb1-5862ac5ae4d2</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>d8dfe916-148c-45ce-b6e3-0aa64037f88c</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="true" maxResults="0" name="Registry BVR Issue" searchProperties="true" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword="" id="19263a36-cec8-40fd-9969-57b07ee7f2cb"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@max_rows">1000</con:setting><con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@errors_only">false</con:setting><con:setting id="IncludeOverview">true</con:setting><con:setting id="IncludeResults">true</con:setting><con:setting id="FlowLayout">true</con:setting><con:setting id="ErrorDetails">true</con:setting><con:setting id="IncludeCoverage">true</con:setting><con:setting id="GeneratableJUnitReport@Style">Single Page (Print)</con:setting><con:setting id="GeneratableJUnitReport@Folder">C:\Users\tijo.thomas\Desktop</con:setting></con:settings><con:testStep type="httprequest" name="GET v2/oauth2/token/userDetails" id="1eb57204-c59d-48b2-965b-c6bbae145c88">
+        <con:settings/>
+        <con:config method="POST" xsi:type="con:HttpRequest" name="GET v2/oauth2/token/userDetails" postQueryString="false" mediaType="application/x-www-form-urlencoded" id="d6130e4a-803b-4834-958c-a7b217358e10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:settings>
+            <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="Basic ${#Project#oauth_token}"/>
+  &lt;con:entry key="Accept" value="${#Project#accept}"/>
+&lt;/xml-fragment></con:setting>
+        </con:settings>
+          <con:endpoint>${#Project#endPoint}/v2/oauth2/token/userDetails?application=Mobile</con:endpoint>
+          <con:request>grant_type=password&amp;username=${#TestCase#emailId}&amp;password=${#TestCase#password}</con:request>
+          <con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes" id="986f5588-983f-438c-9271-ed82fe789c8f">
+            <con:configuration>
+              <codes>200</codes>
+            </con:configuration>
+          </con:assertion>
+          <con:assertion type="GroovyScriptAssertion" name="Script Assertion" id="4a818b8a-e33e-42f6-8bf9-de3b596cd2e2">
+            <con:configuration><scriptText>import com.eviware.soapui.support.XmlHolder
+def holder = new XmlHolder( messageExchange.responseContentAsXml )
+def access_token=holder.getNodeValue("//response/access_token");
+def refresh_token=holder.getNodeValue("//response/refresh_token");
+
+messageExchange.modelItem.testCase.setPropertyValue( "access_token", access_token.toString() )
+messageExchange.modelItem.testCase.setPropertyValue( "refresh_token", refresh_token.toString() )</scriptText></con:configuration>
+          </con:assertion>
+          <con:credentials>
+            <con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType>
+          </con:credentials>
+          <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+          <con:jmsPropertyConfig/>
+          <con:parameters/>
+        </con:config>
+      </con:testStep><con:testStep type="httprequest" name="BVR"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="BVR" postQueryString="false" mediaType="application/xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Authorization" value="Bearer ${#TestCase#access_token}"/>
+  &lt;con:entry key="Accept" value="${#Project#Accept}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#apiendPoint}/v2/registry?show=basic,bride,groom,Shipping,items,totals&amp;type=BVR</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantContactInfo]"><con:configuration><path>exists( //response/coRegistrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [currentAddress]"><con:configuration><path>exists( //response/coRegistrantContactInfo/currentAddress)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [coRegistrantAddressFromRegistrant]"><con:configuration><path>exists( //response/coRegistrantAddressFromRegistrant)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registryInfo]"><con:configuration><path>exists( //response/registryInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [registrantContactInfo]"><con:configuration><path>exists( //response/registrantContactInfo)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [contactAddress]"><con:configuration><path>exists( //response/registrantContactInfo/contactAddress)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" name="Check for existance of [totalQty]"><con:configuration><path>exists( //response/totalQty)</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>Basic</con:selectedAuthProfile><con:addedBasicAuthenticationTypes>Basic</con:addedBasicAuthenticationTypes><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="BVR Loop"><con:settings/><con:config><script>for (int i=0; i&lt;10; i++){
+	sleep(2000)
+	testRunner.runTestStepByName( "BVR")
+}
+testRunner.gotoStepByName( "Delay")	
+</script></con:config></con:testStep><con:testStep type="delay" name="Delay"><con:settings/><con:config><delay>100</delay></con:config></con:testStep><con:properties><con:property><con:name>emailId</con:name><con:value>dsimacys@gmail.com</con:value></con:property><con:property><con:name>password</con:name><con:value>dsimacys123</con:value></con:property><con:property><con:name>access_token</con:name><con:value>cvmn2kzsv6uqbgt5hjrxja37</con:value></con:property><con:property><con:name>refresh_token</con:name><con:value>9xc6rpmr8bj4wdwj6x25msgm</con:value></con:property></con:properties><con:reportParameters/><con:breakPoints><con:testStepId>0592ea83-f3a6-4715-a90d-61a7d166ee99</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>9ffeff1c-93b3-4911-802f-7b3249befd99</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>0b3fa046-21fa-4659-88e8-b6c33f1cf804</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4f5c7e3c-135f-4654-93c5-d190df1852a8</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>f8c76a06-37f8-4430-aeb2-95dae3164a6f</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>6872eaa4-73e8-4f42-b546-bc576a1e8b72</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>c136b370-6432-414a-8fa5-58bd2e0bbe82</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>92ec6ffc-03d0-480a-b2ca-46d275a19e41</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>f0059ac9-6192-4a1e-b7fc-a1e05a6f09b5</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>bbc35938-5b71-4610-ba04-3544735df16b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>93bd8caa-2b6a-45c1-a4da-99dd6ec3d88e</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>e04cf0d4-2f9f-40eb-b6a6-92f97540b861</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>da4ec907-3bbe-43da-a488-fa36cab4313b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b9cfe94f-350f-4aec-a0d4-c1ef63289c4b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3ac7cb55-c0a9-4fb5-a7ad-c7aeb199a019</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>03474a32-c822-4545-b562-2b96e0134fea</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>505ee185-4d82-4c4a-a7d6-a41dd9c1d6f0</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>909feb60-d9f4-48c2-b9b4-539eb072ad17</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a7d3655f-5895-4bdd-9509-ae876f731273</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>88c4bfb7-99b8-4b0a-9f17-0b98a961a714</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>a9b09540-cda6-4a4b-b13e-c7f52370eda2</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>42f5b219-5485-468c-8e76-2a419789cd8a</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3245cf88-02bc-420d-8cda-9842d008c2cc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>3a329d8f-0c5b-4a5d-b19d-19cfb4ab41bf</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>8f648578-cbf5-49c9-9f30-1c26faabb4af</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>00716173-f33f-4414-badf-682d962d8850</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>0141cb0c-98f6-4d7e-822a-6864e5e6c251</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>963184d7-ff9e-4db6-b4b8-6dcc09a27b5d</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>276d686a-98f8-497d-a7b0-4a0eaf4029c9</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b01c8947-86f0-4e9a-85e6-f6e82be11ff1</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>987b86e6-69f4-48e3-964f-2cdf26df18b6</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>24223bac-0e79-4e49-a8d8-220f2b6ffc8d</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>4b170b31-87bc-452d-96e2-13cc889093cc</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>81a5f61c-8207-4600-8bd1-c7f185ae02af</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>009edbaa-96d2-42f6-adf8-cb867ff8e858</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>ea715672-e562-4599-bb09-b4cac9327d22</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>1eb57204-c59d-48b2-965b-c6bbae145c88</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties><con:property><con:name>categoryid</con:name><con:value>7498</con:value></con:property><con:property><con:name>categoryid_child</con:name><con:value>22025</con:value></con:property><con:property><con:name>CityCoRegUpdate</con:name><con:value>Citycoregupdate</con:value></con:property><con:property><con:name>CityRegUpdate</con:name><con:value>Cityregpersonupdate</con:value></con:property><con:property><con:name>CoRegAddfromReg</con:name><con:value>false</con:value></con:property><con:property><con:name>coregCity</con:name><con:value>Coregcity</con:value></con:property><con:property><con:name>CoRegCityShippingUpdate</con:name><con:value>Coregcityshippingupdate</con:value></con:property><con:property><con:name>CoRegCountryShippingUpdate</con:name><con:value>USA</con:value></con:property><con:property><con:name>coregEmail</con:name><con:value>m45aweril1@macys.com</con:value></con:property><con:property><con:name>coregEmailToUpdate</con:name><con:value>coregemailpersonupdate@macys.com</con:value></con:property><con:property><con:name>coregFirstname</con:name><con:value>yaiOp</con:value></con:property><con:property><con:name>coregFirstnameToUpdate</con:name><con:value>Coregfpersonupdatee</con:value></con:property><con:property><con:name>coregLastname</con:name><con:value>GSFhCg</con:value></con:property><con:property><con:name>coregLastnameToUpdate</con:name><con:value>Coreglpersonupdate</con:value></con:property><con:property><con:name>coregMiddlename</con:name><con:value>Coregmiddlenamee</con:value></con:property><con:property><con:name>coregMiddlenameToUpdate</con:name><con:value>Coregiddlepersonupdate</con:value></con:property><con:property><con:name>coregPhone</con:name><con:value>1230476786</con:value></con:property><con:property><con:name>coregPhoneToUpdate</con:name><con:value>1111111118</con:value></con:property><con:property><con:name>CoRegStateShippingUpdate</con:name><con:value>CA</con:value></con:property><con:property><con:name>CoRegZipShippingUpdate</con:name><con:value>10022</con:value></con:property><con:property><con:name>couplesMessage</con:name><con:value>Wishes 2nd!!!</con:value></con:property><con:property><con:name>couplesMessageToUpdate</con:name><con:value>couples Message Update</con:value></con:property><con:property><con:name>CRFName</con:name><con:value>zEiAVzZOGHdThBtCTwj</con:value></con:property><con:property><con:name>CRLName</con:name><con:value>DeEPdDPFGusSmfDWqHji</con:value></con:property><con:property><con:name>emailId</con:name><con:value>user20150805051421@coreg.com</con:value></con:property><con:property><con:name>EventDay</con:name><con:value>8</con:value></con:property><con:property><con:name>EventDayPersonUpdate</con:name><con:value>5</con:value></con:property><con:property><con:name>EventDayToUpdate</con:name><con:value>19</con:value></con:property><con:property><con:name>EventMonth</con:name><con:value>7</con:value></con:property><con:property><con:name>EventMonthPersonUpdate</con:name><con:value>5</con:value></con:property><con:property><con:name>EventMonthToUpdate</con:name><con:value>12</con:value></con:property><con:property><con:name>EventYear</con:name><con:value>2015</con:value></con:property><con:property><con:name>EventYearPersonUpdate</con:name><con:value>2016</con:value></con:property><con:property><con:name>EventYearToUpdate</con:name><con:value>2015</con:value></con:property><con:property><con:name>FShippingCity</con:name><con:value>Fshippingcityy</con:value></con:property><con:property><con:name>FShippingCityUpdate</con:name><con:value>los angels</con:value></con:property><con:property><con:name>FShippingCountryUpdate</con:name><con:value>USA</con:value></con:property><con:property><con:name>FShippingState</con:name><con:value>CA</con:value></con:property><con:property><con:name>FShippingStateUpdate</con:name><con:value>LA</con:value></con:property><con:property><con:name>FShippingZip</con:name><con:value>90478</con:value></con:property><con:property><con:name>FShippingZipUpdate</con:name><con:value>11002</con:value></con:property><con:property><con:name>fulfilqty</con:name><con:value>4</con:value></con:property><con:property><con:name>fulfilqty2</con:name><con:value>3</con:value></con:property><con:property><con:name>FutEffDay</con:name><con:value>16</con:value></con:property><con:property><con:name>FutEffDayShippingUpdate</con:name><con:value>25</con:value></con:property><con:property><con:name>FutEffMonth</con:name><con:value>8</con:value></con:property><con:property><con:name>FutEffMonthShippingUpdate</con:name><con:value>5</con:value></con:property><con:property><con:name>FutEffYear</con:name><con:value>2022</con:value></con:property><con:property><con:name>FutEffYearShippingUpdate</con:name><con:value>2020</con:value></con:property><con:property><con:name>futureShippingAddressSourceUpdate</con:name><con:value>REGISTRANT</con:value></con:property><con:property><con:name>futureShippingAttentionUpdate</con:name><con:value>Future Shipping Attention Update</con:value></con:property><con:property><con:name>futureShippingSource</con:name><con:value>REGISTRANT</con:value></con:property><con:property><con:name>genctxToken</con:name><con:value>65h392Z9bweFK+5ic69Bz/+W4AxbjfBOi64FHi9QVhexlKSqFQcM7e2U5ssECpfODQ3PSxQ43LufF1v2EMP+7RF9aV9yM9/K52YYT6O4PxdgeEjff36BZroxO5j6PvDutSXBKYHFtlBroepOky5JIcmDhu2r2G7Mi41AGVuKFAdHVOn1qI2g1EGNFPq5N0V1</con:value></con:property><con:property><con:name>goGreen</con:name><con:value>true</con:value></con:property><con:property><con:name>GoGreenToUpdate</con:name><con:value>false</con:value></con:property><con:property><con:name>gvr</con:name><con:value>true</con:value></con:property><con:property><con:name>isFutureAdd</con:name><con:value>true</con:value></con:property><con:property><con:name>Line1CoReg</con:name><con:value>Line1coreg</con:value></con:property><con:property><con:name>Line1CoRegShippingUpdate</con:name><con:value>Line1coregshippingupdate</con:value></con:property><con:property><con:name>Line1CoRegUpdate</con:name><con:value>Line1coregpersonupdate</con:value></con:property><con:property><con:name>Line1FShippingUpdate</con:name><con:value>Line1fshippingupdate</con:value></con:property><con:property><con:name>Line1Future</con:name><con:value>Line1futuree</con:value></con:property><con:property><con:name>Line1Reg</con:name><con:value>Line1rege</con:value></con:property><con:property><con:name>Line1RegShippingUpdate</con:name><con:value>Line1regshippingupdate</con:value></con:property><con:property><con:name>Line1RegUpdate</con:name><con:value>Line1regpersonupdate</con:value></con:property><con:property><con:name>Line1Shipping</con:name><con:value>Line1shippinge</con:value></con:property><con:property><con:name>Line1ShippingUpdate</con:name><con:value>Line1shippingupdate</con:value></con:property><con:property><con:name>Line2CoReg</con:name><con:value>Line2corege</con:value></con:property><con:property><con:name>Line2CoRegShippingUpdate</con:name><con:value>Line2coregshippingupdate</con:value></con:property><con:property><con:name>Line2CoRegUpdate</con:name><con:value>Line2coregpersonupdate</con:value></con:property><con:property><con:name>Line2FShippingUpdate</con:name><con:value>Line2fshippingupdate</con:value></con:property><con:property><con:name>Line2Future</con:name><con:value>Line2future</con:value></con:property><con:property><con:name>Line2Reg</con:name><con:value>Line2rege</con:value></con:property><con:property><con:name>Line2RegShippingUpdate</con:name><con:value>Line2regshippingupdate</con:value></con:property><con:property><con:name>Line2RegUpdate</con:name><con:value>Line2regpersonupdate</con:value></con:property><con:property><con:name>Line2Shipping</con:name><con:value>Line2shipping</con:value></con:property><con:property><con:name>Line2ShippingUpdate</con:name><con:value>Line2shippingupdate</con:value></con:property><con:property><con:name>Line3CoReg</con:name><con:value>Line3corege</con:value></con:property><con:property><con:name>Line3CoRegShippingUpdate</con:name><con:value>Line3coregshippingupdate</con:value></con:property><con:property><con:name>Line3CoRegUpdate</con:name><con:value>Line3coregpersonupdate</con:value></con:property><con:property><con:name>Line3FShippingUpdate</con:name><con:value>Line3fshippingupdate</con:value></con:property><con:property><con:name>Line3Future</con:name><con:value>Line3futuree</con:value></con:property><con:property><con:name>Line3Reg</con:name><con:value>Line3reg</con:value></con:property><con:property><con:name>Line3RegShippingUpdate</con:name><con:value>Line3regshippingupdate</con:value></con:property><con:property><con:name>Line3RegUpdate</con:name><con:value>Line3regpersonupdate</con:value></con:property><con:property><con:name>Line3Shipping</con:name><con:value>Line3shipping</con:value></con:property><con:property><con:name>Line3ShippingUpdate</con:name><con:value>Line3shippingupdate</con:value></con:property><con:property><con:name>NoOfGuests</con:name><con:value>50</con:value></con:property><con:property><con:name>NoOfGuestsToUpdate</con:name><con:value>33</con:value></con:property><con:property><con:name>OnlineUPC</con:name><con:value>96018248046</con:value></con:property><con:property><con:name>OnlineUPC2</con:name><con:value>20911224470</con:value></con:property><con:property><con:name>OnTheInternet</con:name><con:value>true</con:value></con:property><con:property><con:name>preferredStoreId</con:name><con:value>139</con:value></con:property><con:property><con:name>preferredStoreIdUpdate</con:name><con:value>71</con:value></con:property><con:property><con:name>prodid_member</con:name><con:value>1539213</con:value></con:property><con:property><con:name>productids</con:name><con:value>2585,2591,2638,2639,2640,2641,2642,2644,2646,2647,2665,2666,2667,2668,2669,2672,2676,2679,2680,2681,2682,4110,4112,8414,8415</con:value></con:property><con:property><con:name>publicRegistry</con:name><con:value>true</con:value></con:property><con:property><con:name>qty</con:name><con:value>5</con:value></con:property><con:property><con:name>qtyupdate</con:name><con:value>6</con:value></con:property><con:property><con:name>qtyupdate2</con:name><con:value>6</con:value></con:property><con:property><con:name>qtyupdate3</con:name><con:value>6</con:value></con:property><con:property><con:name>regCity</con:name><con:value>Regcity</con:value></con:property><con:property><con:name>regCityShippingUpdate</con:name><con:value>Regctysippingupdate</con:value></con:property><con:property><con:name>regCountryShippingUpdate</con:name><con:value>USA</con:value></con:property><con:property><con:name>regEmail</con:name><con:value>ail@macys.com</con:value></con:property><con:property><con:name>regEmailToUpdate</con:name><con:value>regemailpersonupdate@macys.com</con:value></con:property><con:property><con:name>regFirstname</con:name><con:value>aUqczNv</con:value></con:property><con:property><con:name>regFirstnameToUpdate</con:name><con:value>Regfirstpersonupdate</con:value></con:property><con:property><con:name>registryBarcode</con:name><con:value>2809064015849</con:value></con:property><con:property><con:name>registryId</con:name><con:value>6431672</con:value></con:property><con:property><con:name>registryType</con:name><con:value>WEDDING</con:value></con:property><con:property><con:name>registryTypeupdate</con:name><con:value>COMMITMENT</con:value></con:property><con:property><con:name>regLastname</con:name><con:value>IfgkuDIF</con:value></con:property><con:property><con:name>regLastnameToUpdate</con:name><con:value>Reglastpersonupdate</con:value></con:property><con:property><con:name>regMiddlename</con:name><con:value>Regmiddlenamee</con:value></con:property><con:property><con:name>regMiddlenameToUpdate</con:name><con:value>Regmiddlepersonupdate</con:value></con:property><con:property><con:name>regPhone</con:name><con:value>1230456785</con:value></con:property><con:property><con:name>regPhoneToUpdate</con:name><con:value>2222222280</con:value></con:property><con:property><con:name>regState</con:name><con:value>MA</con:value></con:property><con:property><con:name>regStateShippingUpdate</con:name><con:value>MA</con:value></con:property><con:property><con:name>regZipShippingUpdate</con:name><con:value>12345</con:value></con:property><con:property><con:name>RFName</con:name><con:value>aUBWjhIYkhAoiTvVx</con:value></con:property><con:property><con:name>RLName</con:name><con:value>AwulpXimCCtGhfuFSk</con:value></con:property><con:property><con:name>shippingAddressSourceUpdate</con:name><con:value>COREGISTRANT</con:value></con:property><con:property><con:name>ShippingCity</con:name><con:value>Shippingcity</con:value></con:property><con:property><con:name>ShippingCityUpdate</con:name><con:value>Shippingcityupdate</con:value></con:property><con:property><con:name>ShippingCountryUpdate</con:name><con:value>USA</con:value></con:property><con:property><con:name>ShippingFName</con:name><con:value>Shippingfname</con:value></con:property><con:property><con:name>ShippingLName</con:name><con:value>Shippinglname</con:value></con:property><con:property><con:name>shippingSource</con:name><con:value>REGISTRANT</con:value></con:property><con:property><con:name>ShippingState</con:name><con:value>NY</con:value></con:property><con:property><con:name>ShippingStateUpdate</con:name><con:value>CA</con:value></con:property><con:property><con:name>ShippingZip</con:name><con:value>10022</con:value></con:property><con:property><con:name>ShippingZipUpdate</con:name><con:value>94538</con:value></con:property><con:property><con:name>StatecodeToUpdate</con:name><con:value>LA</con:value></con:property><con:property><con:name>StateCoReg</con:name><con:value>LA</con:value></con:property><con:property><con:name>StateCoRegUpdate</con:name><con:value>MA</con:value></con:property><con:property><con:name>StateRegUpdate</con:name><con:value>CA</con:value></con:property><con:property><con:name>storeOnlyupcnumber</con:name><con:value>27131844648</con:value></con:property><con:property><con:name>subscribeWeddingEmail</con:name><con:value>true</con:value></con:property><con:property><con:name>subscribeWeddingEmailUpdate</con:name><con:value>false</con:value></con:property><con:property><con:name>UPC</con:name><con:value>85081125859</con:value></con:property><con:property><con:name>userId</con:name><con:value>null</con:value></con:property><con:property><con:name>ZipcodeCoReg</con:name><con:value>10022</con:value></con:property><con:property><con:name>ZipcodeCoRegUpdate</con:name><con:value>10022</con:value></con:property><con:property><con:name>ZipcodeReg</con:name><con:value>90412</con:value></con:property><con:property><con:name>ZipcodeRegUpdate</con:name><con:value>94103</con:value></con:property><con:property><con:name>count</con:name><con:value>0</con:value></con:property></con:properties><con:reportParameters/></con:testSuite><con:requirements/><con:properties><con:property><con:name>endpoint</con:name><con:value>http://services.bloomingdales.com</con:value></con:property><con:property><con:name>Brand</con:name><con:value>BCOM</con:value></con:property><con:property><con:name>Env</con:name><con:value>Production</con:value></con:property><con:property><con:name>clientId</con:name><con:value>psp_1.0_5825a8b937</con:value></con:property><con:property><con:name>customerId</con:name><con:value>testclient_1.0_kweu3w323a</con:value></con:property><con:property><con:name>zipcode</con:name><con:value>10022</con:value></con:property><con:property><con:name>accept</con:name><con:value>application/xml</con:value></con:property><con:property><con:name>productId</con:name><con:value>1376958</con:value></con:property><con:property><con:name>store</con:name><con:value>PERSONAL_SHOPPER</con:value></con:property><con:property><con:name>storeId</con:name><con:value/></con:property><con:property><con:name>locnbr</con:name><con:value>5494</con:value></con:property><con:property><con:name>storeNumber</con:name><con:value/></con:property><con:property><con:name>state</con:name><con:value>VA</con:value></con:property><con:property><con:name>userPreferredStoreId</con:name><con:value>50006</con:value></con:property><con:property><con:name>locationNumber</con:name><con:value/></con:property><con:property><con:name>password</con:name><con:value>Test@123</con:value></con:property><con:property><con:name>passwordupdate</con:name><con:value>Test@1234</con:value></con:property><con:property><con:name>passwordupdate2</con:name><con:value>Test@12345</con:value></con:property><con:property><con:name>hintAnswer</con:name><con:value>12</con:value></con:property><con:property><con:name>apiendPoint</con:name><con:value>https://api.bloomingdales.com</con:value></con:property><con:property><con:name>preferredStoreId</con:name><con:value>4</con:value></con:property><con:property><con:name>PreferredStoreId_Update</con:name><con:value>50014</con:value></con:property><con:property><con:name>Cookie</con:name><con:value>bloomingdales_online_uid</con:value></con:property><con:property><con:name>oauth_token</con:name><con:value>c3FzM3JjZ3BhNjUzeWFzaGg1aHFnOHB4OkE3Z2V6dE1VSkNBeU55Q3lleko0Y25oUg==</con:value></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:parameters/></con:reporting><con:beforeRunScript>def brand = context.expand('${#Project#brand}')
+def endPoint = context.expand('${#Project#endPoint}')
+def Env = context.expand('${#Project#Env}')
+
+if(brand.equals('MCOM')){
+	if (Env.equals('Production')){		
+		project.setPropertyValue( "apiendPoint", 'https://api.macys.com')		
+		project.setPropertyValue( "oauth_token", "dGZ1Z240NDRzdGduNmc3NmJuanVhNGdjOjNWN245Y3hVYnk2UEZLUFV1VHc5RnpZQw==") //MCOM Prod		
+		project.setPropertyValue( "clientId", "psp_1.0_5825a8b937")
+	}
+	else{
+		project.setPropertyValue( "apiendPoint", endPoint.toString().replace("services","api"))		
+		project.setPropertyValue( "oauth_token", "d3NzZ3FlMjAxNTpXeUVRYU1LckJZ") //new Feb 2015	
+		project.setPropertyValue( "clientId", "testclient_1.0_kweu3w323a")
+	}	
+}
+else{
+	if (Env.equals('Production')){
+		project.setPropertyValue( "apiendPoint", 'https://api.bloomingdales.com')		
+		project.setPropertyValue( "oauth_token", "c3FzM3JjZ3BhNjUzeWFzaGg1aHFnOHB4OkE3Z2V6dE1VSkNBeU55Q3lleko0Y25oUg==") //BCOM Prod
+		project.setPropertyValue( "clientId", "psp_1.0_5825a8b937")
+	}
+	else{
+		project.setPropertyValue( "apiendPoint", endPoint.toString().replace("services","api"))		
+		project.setPropertyValue( "oauth_token", "d3NzZ3FlMjAxNTpXeUVRYU1LckJZ") //new Feb 2015
+		project.setPropertyValue( "clientId", "testclient_1.0_kweu3w323a")
+	}
+}
+</con:beforeRunScript><con:sensitiveInformation/></con:soapui-project>
