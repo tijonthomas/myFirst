@@ -24,6 +24,9 @@ git add --all
 git commit -am "Added Catalog-V4 Module"
 git push origin HEAD:refs/for/master
 
+git command to see the branch contensts - 
+	git ls-tree -r --name-only
+
 mvn clean install -DwssgVersion=4.4.137
 
 
