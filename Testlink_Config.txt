@@ -1,0 +1,97 @@
+https://wiki.jenkins.io/display/JENKINS/Windows+slaves+fail+to+start+via+JNLP
+
+To check the testlink DB >>
+
+>> cd C:\xampp\mysql\bin\
+>> mysql -uroot -p -e "show databases;
+>> Provide password
+
+
+Output - 
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| cdcol              |
+| mysql              |
+| phpmyadmin         |
+| testlink           |
+| testlink193        |
+| webauth            |
++--------------------+
+
+To take backup from old DB - 
+>> cd C:\xampp\mysql\bin
+mysqldump -u root -p testlink > testlink_backup.sql
+
+
+https://community.bitnami.com/t/change-the-url-server-of-testlink-for-a-friendly-url/51232
+
+TO restore - 
+>> cd C:\xampp\mysql\bin
+>> mysql -u root -p testlink < C:/Users/tthomas/Downloads/TLBackUp/testlink_full.sql
+
+<Update the DB Version from Previous to Current one by one>
+
+>> mysql -u root -p
+MariaDB [(none)]> use testlink;
+MariaDB [testlink]>> 
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.8\mysql\DB.1.2\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.8\mysql\DB.1.2\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9\mysql\DB.1.3\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9\mysql\DB.1.3\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.1\mysql\DB.1.4\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.1\mysql\DB.1.4\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.4\mysql\DB.1.5\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.4\mysql\DB.1.5\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.6\mysql\DB.1.6\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.6\mysql\DB.1.6\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.8\mysql\DB.1.9.8\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.8\mysql\DB.1.9.8\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.9\mysql\DB.1.9.9\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.9\mysql\DB.1.9.9\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.10\mysql\DB.1.9.10\step1\db_data_update.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.11\mysql\DB.1.9.11\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.11\mysql\DB.1.9.11\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.12\mysql\DB.1.9.12\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.12\mysql\DB.1.9.12\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.13\mysql\DB.1.9.13\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.13\mysql\DB.1.9.13\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.14\mysql\DB.1.9.14\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.14\mysql\DB.1.9.14\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.15\mysql\DB.1.9.15\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.15\mysql\DB.1.9.15\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.16\mysql\DB.1.9.16\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.16\mysql\DB.1.9.16\stepZ\z_final_step.sql
+
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.17\mysql\DB.1.9.17\step1\db_schema_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.17\mysql\DB.1.9.17\step1\db_udf_update.sql
+source C:\xampp\htdocs\testlink\install\sql\alter_tables\1.9.17\mysql\DB.1.9.17\stepZ\z_final_step.sql
+
+
+
+
+You have always have to migrate one by one to each version that is newer
+than yours. Extreme example: migration from 1.7.4
+
+    1.7.4 => 1.7.5 => 1.8.1 => 1.8.2 => 1.8.3 => 1.8.4 => 1.8.5 => 1.9.0
+    1.9.0 => 1.9.1 => 1.9.2 => 1.9.3 => 1.9.4 => 1.9.5 => 1.9.6 => 1.9.7 => 1.9.8 => 1.9.9 => 1.9.10 => 1.9.11 => 1.9.12 => 1.9.13 => 1.9.14 => 1.9.15 => 1.9.16 => 1.9.17
+	
+Test Suite : POS/ Active_Projects/ Manual/ XStore/ Complete Regression/ P1/ EFT/
+
+To fix - test steps and expected results of former testcases were missing
+http://mantis.testlink.org/view.php?id=6594
